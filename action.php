@@ -1,6 +1,6 @@
 <?php
 
-$uploaddir = '/var/www/html/uploads/';
+$uploaddir = '/var/www/html/aws-attack/uploads/';
 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
 
 echo '<pre>';
