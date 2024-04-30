@@ -1,0 +1,45 @@
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instances. Linked to AWS Parameter
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  OSImage:
+    Description: First Image Test
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-ebs'
+    AllowedValues:
+      - /aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-ebs
+
+Resources:
+  WebInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref OSImage
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      Tags:
+        - Key: Name
+          Value: Web03
+      SecurityGroups:
+        - !Ref SecurityGroup
+      UserData:
+        Fn::Base64:
+          Fn::Sub:
+            |
+            #!/bin/bash
+            echo "<h1>IaC Example</h1>" > index.html
+            python -m SimpleHTTPServer 80 
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access via port 80 and SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
