@@ -106,7 +106,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref publicRT
-      SubnetId: [!Ref public01,!Ref public02]
+      SubnetId: [!Ref public01, public02]
 
   
   privateRT01:
