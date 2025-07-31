@@ -1,0 +1,22 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# PHP 및 Apache 설치
+RUN apt-get update && \
+    apt-get install -y apache2 php php-curl php-gd php-mysql php-mysqli git && \
+    apt-get clean
+
+# 기존 html 디렉토리 제거 후 git 클론
+RUN rm -rf /var/www/html && \
+    git clone https://github.com/KoreaSecurity/aws-attack.git /var/www/html && \
+    mkdir -p /var/www/html/uploads && \
+    chmod 777 /var/www/html/uploads && \
+    echo "<?php phpinfo(); ?>" > /var/www/html/index.php
+
+# Apache 설정
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    chown -R www-data:www-data /var/www/html
+
+EXPOSE 80
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
