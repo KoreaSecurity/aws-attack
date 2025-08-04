@@ -3,7 +3,7 @@ curl -L https://github.com/postmodern/ruby-install/archive/refs/tags/v0.9.3.tar.
 cd ruby-install-0.9.3
 sudo make install
 
-ruby-install ruby 3.1.4
+sudo ruby-install ruby 3.1.4
 echo 'export PATH="/opt/rubies/ruby-3.1.4/bin:$HOME/.gem/bin:$PATH"' >> ~/.bash_profile
 echo 'export GEM_HOME="$HOME/.gem"' >> ~/.bash_profile
 echo 'export GEM_PATH="$GEM_HOME"' >> ~/.bash_profile
