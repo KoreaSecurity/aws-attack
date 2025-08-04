@@ -5,10 +5,16 @@ sudo make install
 
 sudo su - deploy
 ruby-install ruby 3.1.4
-echo 'export PATH="/opt/rubies/ruby-3.1.4/bin:$PATH"' >> ~/.bash_profile
+echo 'export PATH="/opt/rubies/ruby-3.1.4/bin:$HOME/.gem/bin:$PATH"' >> ~/.bash_profile
+echo 'export GEM_HOME="$HOME/.gem"' >> ~/.bash_profile
+echo 'export GEM_PATH="$GEM_HOME"' >> ~/.bash_profile
 source ~/.bash_profile
-exit
+hash -r
+
+# Gem 설치
 gem update --system
 gem install bundler
-sudo su - deploy
-ruby -v
+
+# 버전 확인
+ruby -v    
+gem env    
