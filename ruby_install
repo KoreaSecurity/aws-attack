@@ -1,4 +1,12 @@
-curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash 
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
-echo 'eval "$(rbenv init -)"' >> ~/.bash_profile 
+sudo dnf install -y ruby tar gcc make bzip2 zlib-devel
+curl -L https://github.com/postmodern/ruby-install/archive/refs/tags/v0.9.3.tar.gz | tar xz
+cd ruby-install-0.9.3
+sudo make install
+
+sudo su - deploy
+ruby-install ruby 3.1.4
+echo 'export PATH="/opt/rubies/ruby-3.1.4/bin:$PATH"' >> ~/.bash_profile
 source ~/.bash_profile
+gem update --system
+gem install bundler
+ruby -v
