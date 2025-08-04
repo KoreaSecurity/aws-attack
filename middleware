@@ -1,2 +1,4 @@
-sudo yum install -y git gcc-c++ glibc-headers openssl-devel readline libyaml-devel readline-devel zlib zlib-devel libffi-devel libxml2 libxslt libxml2-devel libxslt-devel sqlite-devel libcurl-devel mysql mysql-devel ImageMagick
-sudo amazon-linux-extras install -y nginx1
+sudo dnf install -y git gcc-c++ glibc-headers openssl-devel readline-devel libyaml-devel zlib-devel libffi-devel libxml2 libxslt libxml2-devel libxslt-devel sqlite-devel libcurl-devel ImageMagick make bzip2 autoconf
+sudo dnf install -y nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
