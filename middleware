@@ -1,3 +1,5 @@
+sudo dnf groupinstall "Development Tools" -y
+sudo dnf install -y gcc make ruby-devel zlib-devel openssl-devel libffi-devel mysql-devel readline-devel
 sudo dnf install -y git gcc-c++ glibc-headers openssl-devel readline-devel libyaml-devel zlib-devel libffi-devel libxml2 libxslt libxml2-devel libxslt-devel sqlite-devel libcurl-devel ImageMagick make bzip2 autoconf
 sudo dnf install -y nginx
 sudo systemctl enable nginx
