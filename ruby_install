@@ -1,4 +1,4 @@
-sudo dnf install -y ruby tar gcc make bzip2 zlib-devel
+sudo dnf install -y ruby tar gcc make bzip2 zlib-devel nodejs
 curl -L https://github.com/postmodern/ruby-install/archive/refs/tags/v0.9.3.tar.gz | tar xz
 cd ruby-install-0.9.3
 sudo make install
@@ -11,7 +11,7 @@ source ~/.bash_profile
 hash -r
 
 # Gem 설치
-gem update --system
+
 gem install bundler
 
 # 버전 확인
