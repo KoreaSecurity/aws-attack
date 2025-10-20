@@ -1,5 +1,6 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: Security VPC 
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Security VPC
+
 Resources:
   secVPC:
     Type: AWS::EC2::VPC
@@ -9,24 +10,24 @@ Resources:
       Tags:
         - Key: Name
           Value: securityVPC
-  
+
   public01:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref secVPC
       CidrBlock: 10.0.0.0/20
-      AvailabilityZone: "ap-northeast-2a"
+      AvailabilityZone: ap-northeast-2a
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
           Value: public01
-             
+
   private01:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref secVPC
       CidrBlock: 10.0.64.0/20
-      AvailabilityZone: "ap-northeast-2a"
+      AvailabilityZone: ap-northeast-2a
       Tags:
         - Key: Name
           Value: private01
@@ -36,56 +37,71 @@ Resources:
     Properties:
       VpcId: !Ref secVPC
       CidrBlock: 10.0.16.0/20
-      AvailabilityZone: "ap-northeast-2c"
+      AvailabilityZone: ap-northeast-2c
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
           Value: public02
-             
-  
+
   private02:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref secVPC
       CidrBlock: 10.0.80.0/20
-      AvailabilityZone: "ap-northeast-2c"
+      AvailabilityZone: ap-northeast-2c
       Tags:
         - Key: Name
           Value: private02
 
-          
-  
   secIGW:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
           Value: secIGW
-  Attachigw:
+
+  AttachIGW:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId: !Ref secIGW
       VpcId: !Ref secVPC
-  
+
   secEIP01:
     Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: secEIP01
+
   secNAT01:
     Type: AWS::EC2::NatGateway
-    DependsOn: Attachigw
+    DependsOn: secEIP01
     Properties:
       AllocationId: !GetAtt secEIP01.AllocationId
       SubnetId: !Ref public01
-      
+      Tags:
+        - Key: Name
+          Value: secNAT01
+
   secEIP02:
     Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: secEIP02
+
   secNAT02:
     Type: AWS::EC2::NatGateway
-    DependsOn: Attachigw
+    DependsOn: secEIP02
     Properties:
       AllocationId: !GetAtt secEIP02.AllocationId
       SubnetId: !Ref public02
-   
-  
+      Tags:
+        - Key: Name
+          Value: secNAT02
+
   publicRT:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -93,57 +109,65 @@ Resources:
       Tags:
         - Key: Name
           Value: publicRT
-          
+
   PublicRoute:
     Type: AWS::EC2::Route
-    DependsOn: Attachigw
+    DependsOn: AttachIGW
     Properties:
       RouteTableId: !Ref publicRT
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref secIGW
-      
-  PublicSubnetRTAssociation:
+
+  PublicSubnetRTAssociation01:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref publicRT
-      SubnetId: [!Ref public01, public02]
+      SubnetId: !Ref public01
 
-  
+  PublicSubnetRTAssociation02:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref publicRT
+      SubnetId: !Ref public02
+
   privateRT01:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref secVPC
       Tags:
         - Key: Name
-          Value: privateRT01 
-          
+          Value: privateRT01
+
   privateRoute01:
     Type: AWS::EC2::Route
-    DependsOn: Attachigw
+    DependsOn: secNAT01
     Properties:
       RouteTableId: !Ref privateRT01
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref secNAT01
+
   PrivateSubnetRTAssociation01:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref privateRT01
       SubnetId: !Ref private01
-      
+
   privateRT02:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref secVPC
       Tags:
         - Key: Name
-          Value: privateRT02 
+          Value: privateRT02
+
   privateRoute02:
     Type: AWS::EC2::Route
-    DependsOn: Attachigw
+    DependsOn: secNAT02
     Properties:
       RouteTableId: !Ref privateRT02
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref secNAT02
+
   PrivateSubnetRTAssociation02:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
