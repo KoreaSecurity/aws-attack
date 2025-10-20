@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Security VPC
+Description: Security VPC with Public/Private Subnets and Firewalls
 
 Resources:
   secVPC:
@@ -173,3 +173,45 @@ Resources:
     Properties:
       RouteTableId: !Ref privateRT02
       SubnetId: !Ref private02
+
+  # ---------------------------
+  # Security Groups (Firewalls)
+  # ---------------------------
+
+  webFirewall:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound HTTP (80) from anywhere
+      VpcId: !Ref secVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: web-firewall
+
+  sshFirewall:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound SSH (22) from anywhere
+      VpcId: !Ref secVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: ssh-firewall
