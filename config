@@ -10,7 +10,7 @@ Host web01
 	ProxyCommand ssh.exe bastion -W %h:%p
 
 Host web02
-	Hostname {웹 서버 01의 프라이빗 IP}
+	Hostname {웹 서버 02의 프라이빗 IP}
 	User ec2-user
 	IdentityFile ~\.ssh\{키파일.pem}
 	ProxyCommand ssh.exe bastion -W %h:%p
